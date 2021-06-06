@@ -1,0 +1,23 @@
+#DJANGO
+django == 3.2.1
+
+#DJANGO REST FRAMEWORK
+djangorestframework == 3.12.4
+
+#PyJWT
+PyJWT == 2.1.0
+
+#POSTGRESQL
+psycopg2-binary == 2.8.6
+
+#REQUESTS
+requests == 2.25.1
+
+#CORS
+django-cors-headers == 3.7.0
+
+#FIREBASE
+firebase-admin == 5.0.0
+
+
+#pip install -r requirements.txt
