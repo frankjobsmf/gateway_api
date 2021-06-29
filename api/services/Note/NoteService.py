@@ -31,7 +31,7 @@ class ListNotesByUserIdAPI(APIView):
     def get(self, request, *args, **kwargs):
 
         #cabecera de la peticion
-        header_authorization = self.request.headers['Authorization']
+        header_authorization = request.headers['Authorization']
 
         try:
             #decodificando el token que viene el Headers -> Authorization
@@ -49,6 +49,35 @@ class ListNotesByUserIdAPI(APIView):
             return Response({
                 "notes": notes['notes'],
                 "status_code": notes['status_code']
+            })
+        
+        except jwt.exceptions.InvalidTokenError:
+            return Response({
+                "message": "El token no es valido",
+                "status_code": status.HTTP_401_UNAUTHORIZED
+            })
+
+#list note by id
+class ListNoteById(APIView):
+    def get(self, request, *args, **kwargs):
+
+        #cabecera de la peticion
+        header_authorization = request.headers['Authorization']
+
+        try:
+            # #decodificando el token que viene el Headers -> Authorization
+            jwt.decode(header_authorization, 'secret-note-app', algorithms=['HS256'])
+
+            #preparando endpoint para notes-userid
+            endpoint_note = 'note-id/id=' + str(kwargs['id'])
+            
+            #llamando a la api de notas por usuario id del microservicio note_servicio
+            note_get = requests.get( URL_NOTE_API + endpoint_note )
+            note = note_get.json()
+            
+            return Response({
+                "note": note['note'],
+                "status_code": note['status_code']
             })
         
         except jwt.exceptions.InvalidTokenError:

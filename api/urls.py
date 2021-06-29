@@ -5,6 +5,8 @@ from django.urls import path
 from .services.Note.NoteService import (
     #list
     ListNotesByUserIdAPI,
+    #list note by id
+    ListNoteById,
     #add
     AddNoteAPI,
     #update
@@ -27,6 +29,11 @@ urlpatterns = [
     path(
         'notes-userid', 
         ListNotesByUserIdAPI.as_view()
+    ),
+    #list note by id
+    path(
+        'note-id/id=<int:id>', 
+        ListNoteById.as_view()
     ),
     #add
     path(
