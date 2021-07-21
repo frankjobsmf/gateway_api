@@ -47,8 +47,7 @@ class ListNotesByUserIdAPI(APIView):
             notes = notes_get.json()
             
             return Response({
-                "notes": notes['notes'],
-                "status_code": notes['status_code']
+                "notes": notes['notes']
             })
         
         except jwt.exceptions.InvalidTokenError:
@@ -108,6 +107,8 @@ class AddNoteAPI(APIView):
             if serializer.is_valid():
                 #endpoint para enviar diccionario de note
                 endpoint_note = 'add'
+
+                print(user_id)
 
                 #estructura de note
                 note_dict = {

@@ -74,7 +74,7 @@ class LoginAPI(APIView):
             #desestructurar user de la peticion
             user = resp_user['user']
 
-            dt = datetime.now() + timedelta(days=15) 
+            dt = datetime.now() + timedelta(days=1) 
             token = jwt.encode({'user': user, 'exp': dt}, 'secret-note-app', algorithm='HS256')
 
             return Response({
