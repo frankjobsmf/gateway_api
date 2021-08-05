@@ -21,6 +21,8 @@ from .services.User.UserService import (
     RegisterAPI,
     #login
     LoginAPI,
+    #refresh token
+    RefreshTokenAPI,
 )
 
 urlpatterns = [
@@ -61,5 +63,10 @@ urlpatterns = [
     path(
         'login',
         LoginAPI.as_view(),
+    ),
+    #refresh token
+    path(
+        'refresh-token',
+        RefreshTokenAPI.as_view(),
     ),
 ]
