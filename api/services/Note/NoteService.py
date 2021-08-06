@@ -12,7 +12,8 @@ import jwt
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework import permissions
+
+from ..secretKey import SECRET_KEY
 
 #constante para el microservicio note_service
 URL_NOTE_API = 'http://127.0.0.1:8002/note/'
@@ -35,7 +36,7 @@ class ListNotesByUserIdAPI(APIView):
 
         try:
             #decodificando el token que viene el Headers -> Authorization
-            decoded_jwt = jwt.decode(header_authorization, 'secret-note-app', algorithms=['HS256'])
+            decoded_jwt = jwt.decode(header_authorization, SECRET_KEY, algorithms=['HS256'])
 
             user_id = decoded_jwt['user']['id']
 
@@ -65,7 +66,7 @@ class ListNoteById(APIView):
 
         try:
             # #decodificando el token que viene el Headers -> Authorization
-            jwt.decode(header_authorization, 'secret-note-app', algorithms=['HS256'])
+            jwt.decode(header_authorization, SECRET_KEY, algorithms=['HS256'])
 
             #preparando endpoint para notes-userid
             endpoint_note = 'note-id/id=' + str(kwargs['id'])
@@ -97,7 +98,7 @@ class AddNoteAPI(APIView):
         try:
 
             #decodificando el token que viene el Headers -> Authorization
-            decoded_jwt = jwt.decode(header_authorization, 'secret-note-app', algorithms=['HS256'])
+            decoded_jwt = jwt.decode(header_authorization, SECRET_KEY, algorithms=['HS256'])
 
             user_id = decoded_jwt['user']['id']
 
@@ -149,7 +150,7 @@ class UpdateNoteAPI(APIView):
         try:
 
             #decodificando el token que viene el Headers -> Authorization
-            decoded_jwt = jwt.decode(header_authorization, 'secret-note-app', algorithms=['HS256'])
+            decoded_jwt = jwt.decode(header_authorization, SECRET_KEY, algorithms=['HS256'])
 
 
             #endpoint para actualizar la nota, debemos indicar el id de la nota que queremos actualizar
@@ -198,7 +199,7 @@ class DeleteNoteAPI(APIView):
         try:
 
             #decodificando el token que viene el Headers -> Authorization
-            decoded_jwt = jwt.decode(header_authorization, 'secret-note-app', algorithms=['HS256'])
+            decoded_jwt = jwt.decode(header_authorization, SECRET_KEY, algorithms=['HS256'])
             
             #endpoint para actualizar la nota, debemos indicar el id de la nota que queremos actualizar
             endpoint_note = 'delete/id=' + str(kwargs['id'])
