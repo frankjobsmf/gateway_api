@@ -24,6 +24,8 @@ from .userSerializers import (
     LoginSocialSerializer,
 )
 
+from ..secretKey import SECRET_KEY
+
 URL_USER_API = 'http://127.0.0.1:8001/user/'
 
 class RegisterAPI(APIView):
@@ -77,8 +79,8 @@ class LoginAPI(APIView):
             #desestructurar user de la peticion
             user = resp_user['user']
 
-            access_token = jwt.encode({"user": user, "exp": datetime.utcnow() + timedelta(minutes=5)}, "secret-note-app", algorithm="HS256")
-            refresh_token = jwt.encode({"user": user, "exp": datetime.utcnow() + timedelta(minutes=15)}, "secret-note-app", algorithm="HS256")
+            access_token = jwt.encode({"user": user, "exp": datetime.utcnow() + timedelta(minutes=5)}, SECRET_KEY, algorithm="HS256")
+            refresh_token = jwt.encode({"user": user, "exp": datetime.utcnow() + timedelta(minutes=15)}, SECRET_KEY, algorithm="HS256")
 
 
             return Response({
@@ -121,7 +123,7 @@ class RefreshTokenAPI(APIView):
         header_authorization = self.request.headers['Authorization']
 
         try:
-            decoded_token = jwt.decode(header_authorization, 'secret-note-app', algorithms=['HS256'])
+            decoded_token = jwt.decode(header_authorization, SECRET_KEY, algorithms=['HS256'])
 
             user_username = decoded_token['user']['username']
 
@@ -132,7 +134,7 @@ class RefreshTokenAPI(APIView):
             user = user_resp['user']
 
             if user['username'] == user_username:
-                token = jwt.encode({"user": user, "exp": datetime.utcnow() + timedelta(minutes=15)}, "secret-note-app", algorithm="HS256")
+                token = jwt.encode({"user": user, "exp": datetime.utcnow() + timedelta(minutes=15)}, SECRET_KEY, algorithm="HS256")
 
                 return Response({
                     "token": token,
