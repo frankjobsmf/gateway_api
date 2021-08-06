@@ -129,8 +129,6 @@ class RefreshTokenAPI(APIView):
 
             user_resp = requests.post(URL_USER_API + endpoint_user, json={'user_username': user_username}).json()
 
-            print(user_resp)
-
             user = user_resp['user']
 
             if user['username'] == user_username:
@@ -142,10 +140,12 @@ class RefreshTokenAPI(APIView):
                 })
 
             return Response({
-                "token": "Error with username"
+                "token": "An error has occurred",
+                "status_code": status.HTTP_401_UNAUTHORIZED
             })
 
         except jwt.ExpiredSignatureError:
             return Response({
-                "token": "Invalid signature"
+                "token": "Token has expired",
+                "status_code": status.HTTP_401_UNAUTHORIZED
             })
