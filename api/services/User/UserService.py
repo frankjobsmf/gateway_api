@@ -21,6 +21,7 @@ from .userSerializers import (
     RegisterSerializer,
     LoginSerializer,
     LoginSocialSerializer,
+    RefreshTokenSerializer,
 )
 
 from ..secretKey import SECRET_KEY
@@ -63,7 +64,9 @@ class LoginAPI(APIView):
     def post(self, request, *args, **kwargs):
         
         serializer = LoginSerializer(data=request.data)
-        
+
+        print(serializer)
+
         if serializer.is_valid():
 
             endpoint_user = 'login'
@@ -72,6 +75,8 @@ class LoginAPI(APIView):
                 'username': serializer.validated_data['username'],
                 'password': serializer.validated_data['password']
             }
+
+            print(user_dict)
 
             resp_user = requests.post(URL_USER_API + endpoint_user, json={'user_dict': user_dict}).json()
 
@@ -117,12 +122,17 @@ class LoginSocialAPI(APIView):
 
 
 class RefreshTokenAPI(APIView):
+    serializer_class = RefreshTokenSerializer
+
     def post(self, request, *args, **kwargs):
 
-        header_authorization = self.request.headers['Authorization']
+        serializer = RefreshTokenSerializer(data=request.data)
 
-        try:
-            decoded_token = jwt.decode(header_authorization, SECRET_KEY, algorithms=['HS256'])
+        if serializer.is_valid():
+
+            refresh_token_body = serializer.validated_data['refresh_token']
+
+            decoded_token = jwt.decode(refresh_token_body, SECRET_KEY, algorithms=['HS256'])
 
             user_username = decoded_token['user']['username']
 
@@ -133,20 +143,22 @@ class RefreshTokenAPI(APIView):
             user = user_resp['user']
 
             if user['username'] == user_username:
-                token = jwt.encode({"user": user, "exp": datetime.utcnow() + timedelta(minutes=15)}, SECRET_KEY, algorithm="HS256")
+
+                access_token = jwt.encode({"user": user, "exp": datetime.utcnow() + timedelta(minutes=5)}, SECRET_KEY, algorithm="HS256")
+                refresh_token = jwt.encode({"user": user, "exp": datetime.utcnow() + timedelta(minutes=15)}, SECRET_KEY, algorithm="HS256")
 
                 return Response({
-                    "token": token,
+                    "access_token": access_token,
+                    "refresh_token": refresh_token,
                     "status_code": status.HTTP_200_OK
                 })
 
             return Response({
-                "token": "An error has occurred",
+                "access_token": "An error has occurred",
                 "status_code": status.HTTP_401_UNAUTHORIZED
             })
 
-        except jwt.ExpiredSignatureError:
-            return Response({
-                "token": "Token has expired",
-                "status_code": status.HTTP_401_UNAUTHORIZED
-            })
+        return Response({
+            "access_token": "Token has expired",
+            "status_code": status.HTTP_401_UNAUTHORIZED
+        })

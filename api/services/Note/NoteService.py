@@ -34,6 +34,8 @@ class ListNotesByUserIdAPI(APIView):
         #cabecera de la peticion
         header_authorization = request.headers['Authorization']
 
+        print(header_authorization)
+
         try:
             #decodificando el token que viene el Headers -> Authorization
             decoded_jwt = jwt.decode(header_authorization, SECRET_KEY, algorithms=['HS256'])
@@ -53,7 +55,7 @@ class ListNotesByUserIdAPI(APIView):
         
         except jwt.exceptions.InvalidTokenError:
             return Response({
-                "message": "El token no es valido",
+                "message": "Error with token",
                 "status_code": status.HTTP_401_UNAUTHORIZED
             })
 

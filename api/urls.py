@@ -64,7 +64,7 @@ urlpatterns = [
         'login',
         LoginAPI.as_view(),
     ),
-    #refresh token
+    #refresh-token
     path(
         'refresh-token',
         RefreshTokenAPI.as_view(),

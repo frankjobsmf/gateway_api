@@ -16,3 +16,9 @@ class LoginSerializer(serializers.Serializer):
 #login social
 class LoginSocialSerializer(serializers.Serializer):
     id_token = serializers.CharField()
+
+
+
+#refresh token
+class RefreshTokenSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField()
