@@ -34,11 +34,12 @@ class ListNotesByUserIdAPI(APIView):
         #cabecera de la peticion
         header_authorization = request.headers['Authorization']
 
-        print(header_authorization)
+        print( header_authorization )
 
         try:
             #decodificando el token que viene el Headers -> Authorization
             decoded_jwt = jwt.decode(header_authorization, SECRET_KEY, algorithms=['HS256'])
+
 
             user_id = decoded_jwt['user']['id']
 
@@ -48,15 +49,16 @@ class ListNotesByUserIdAPI(APIView):
             #llamando a la api de notas por usuario id del microservicio note_servicio
             notes_get = requests.get( URL_NOTE_API + endpoint_note )
             notes = notes_get.json()
-            
+
             return Response({
-                "notes": notes['notes']
+                "notes": notes['notes'],
+                "status": status.HTTP_200_OK
             })
         
         except jwt.exceptions.InvalidTokenError:
             return Response({
-                "message": "Error with token",
-                "status_code": status.HTTP_401_UNAUTHORIZED
+                "message": "Expired token",
+                "status": status.HTTP_401_UNAUTHORIZED
             })
 
 #list note by id
@@ -217,6 +219,6 @@ class DeleteNoteAPI(APIView):
             #
         except jwt.exceptions.InvalidTokenError:
             return Response({
-                "message": "El token no es valido",
+                "message": "Expired token",
                 "status_code": status.HTTP_401_UNAUTHORIZED
             })

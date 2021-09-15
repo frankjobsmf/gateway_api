@@ -65,8 +65,6 @@ class LoginAPI(APIView):
         
         serializer = LoginSerializer(data=request.data)
 
-        print(serializer)
-
         if serializer.is_valid():
 
             endpoint_user = 'login'
@@ -76,15 +74,13 @@ class LoginAPI(APIView):
                 'password': serializer.validated_data['password']
             }
 
-            print(user_dict)
-
             resp_user = requests.post(URL_USER_API + endpoint_user, json={'user_dict': user_dict}).json()
 
             #desestructurar user de la peticion
             user = resp_user['user']
 
             access_token = jwt.encode({"user": user, "exp": datetime.utcnow() + timedelta(minutes=5)}, SECRET_KEY, algorithm="HS256")
-            refresh_token = jwt.encode({"user": user, "exp": datetime.utcnow() + timedelta(minutes=15)}, SECRET_KEY, algorithm="HS256")
+            refresh_token = jwt.encode({"user": user, "exp": datetime.utcnow() + timedelta(hours=5)}, SECRET_KEY, algorithm="HS256")
 
 
             return Response({
@@ -150,7 +146,7 @@ class RefreshTokenAPI(APIView):
                 return Response({
                     "access_token": access_token,
                     "refresh_token": refresh_token,
-                    "status_code": status.HTTP_200_OK
+                    "status_code": status.HTTP_201_CREATED
                 })
 
             return Response({
